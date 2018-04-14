@@ -16,6 +16,10 @@ let conf = {
             {
                 test: /\.js$/,
                 loader: 'babel-loader'
+            },
+            {
+                test: /\.(png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot|mp4)(\?.*$|$)/,
+                loader: 'url-loader?limit=100000'
             }
         ]
     }

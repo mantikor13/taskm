@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack --mode development --watch"
+    "dev": "webpack --mode development --watch",
+    "build": "webpack --mode production"
   },
   "author": "",
   "license": "ISC",
@@ -15,9 +16,11 @@
     "babel-preset-env": "*",
     "babel-preset-stage-3": "*",
     "css-loader": "^0.28.11",
+    "file-loader": "^1.1.11",
     "jquery": "^3.3.1",
     "stylus": "^0.54.5",
     "stylus-loader": "^3.0.2",
+    "url-loader": "^0.5.9",
     "vue": "^2.5.16",
     "vue-html-loader": "^1.2.4",
     "vue-loader": "^14.2.2",

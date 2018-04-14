@@ -1,7 +1,7 @@
 <template>
     <div class="app">
-        <h1 class="title">{{message}}</h1>
-        <div class="content">lorem*2</div>
+        <Menu></Menu>
+        <Board></Board>
     </div>
 </template>
 
@@ -16,14 +16,29 @@
 </script>
 
 <style lang="stylus">
+    html{
+        height 100%;
+    }
+    body{
+        margin: 0;
+        height 100%;
+    }
+    *{
+        box-sizing border-box;
+    }
     .app{
-        display: flex;
-        flex-direction: column;
-        justify-content: space-around;
-        align-items: center;
+        width: 100%;
+        height: 100%;
+        position: relative;
 
-        .content{
-            font-size: 30px;
-        }
+        font-family Roboto;
+
+        /*display inline-block;*/
+        /*padding 50px 0 0 150px;*/
+
+        display flex
+        justify-content flex-end
+        align-items flex-end
+
     }
 </style>
