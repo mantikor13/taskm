@@ -2,25 +2,38 @@
 
     <div class="mngr">
 
-        <div class="mngr__new"></div>
+        <div class="mngr__new">
+            <div class="mngr__new_wrap" @dblclick="addTask" style="top: newTop">
+
+            </div>
+            <transition name="fade">
+                <div class="mngr__new-task-form" v-if="newMode">
+                    <input type="text"><input type="text"><input type="text">
+                </div>
+            </transition>
+        </div>
         <div class="mngr__tasks">
             <div class="mngr__regular">
                 <div class="mngr__item">
-                    <div class="item__top">
-                        <div class="item__title">Test</div>
-                        <div class="item__count">5</div>
-                    </div>
-                    <div class="item__content">
-                        Lorem ipsum Lorem ipsumLorem ipsum Lorem ipsum Lorem ipsum
+                    <div class="mngr__item_wrap">
+                        <div class="item__top">
+                            <div class="item__title">Test</div>
+                            <div class="item__count">5</div>
+                        </div>
+                        <div class="item__content">
+                            Lorem ipsum Lorem ipsumLorem ipsum Lorem ipsum Lorem ipsum
+                        </div>
                     </div>
                 </div>
                 <div class="mngr__item">
-                    <div class="item__top">
-                        <div class="item__title">Test</div>
-                        <div class="item__count">5</div>
-                    </div>
-                    <div class="item__content">
-                        Lorem ipsum Lorem ipsumLorem ipsum Lorem ipsum Lorem ipsum
+                    <div class="mngr__item_wrap">
+                        <div class="item__top">
+                            <div class="item__title">Test</div>
+                            <div class="item__count">5</div>
+                        </div>
+                        <div class="item__content">
+                            Lorem ipsum Lorem ipsumLorem ipsum Lorem ipsum Lorem ipsum
+                        </div>
                     </div>
                 </div>
             </div>
@@ -35,7 +48,14 @@
     export default {
         data(){
             return{
-                message: 'Hellow, world'
+                newMode: false
+            }
+        },
+        methods: {
+            addTask(e){
+                console.log(e);
+                this.newMode = !this.newMode;
+
             }
         }
     }
@@ -43,20 +63,38 @@
 
 <style lang="stylus">
 
+    .fade-enter-active, .fade-leave-active {
+        transition: opacity .5s;
+    }
+    .fade-enter, .fade-leave-to /* .fade-leave-active до версии 2.1.8 */ {
+        opacity: 0;
+    }
+
     .mngr{
         padding 50px;
 
         display: flex;
 
         &__new{
-            flex-basis 300px;
-            flex-grow: 2;
+            width 300px
             border-right 3px solid #491D37;
+            position: relative
+
+            &_wrap{
+                width 100%
+                height: 100%
+            }
+
+            &-task-form{
+                position absolute;
+                top 0;
+                bottom: 0
+
+            }
         }
 
         &__tasks{
-            flex-basis 300px;
-            flex-grow: 7;
+            flex-grow 1
 
             display flex;
             flex-direction column;
@@ -83,13 +121,20 @@
             height 100%;
             width 45%;
 
-            padding 15px;
+            padding 0 5px;
 
-            border: 1px solid red;
-            border-radius 10px;
+            border-top: 5px solid red;
 
-            background-color: rgba(0, 0, 0, 0.5);
             color: white
+
+            &_wrap{
+                height 100%;
+               background-color: rgba(0, 0, 0, 0.5);
+               padding 15px;
+               border-radius 10px;
+               border-top-right-radius: 0;
+               border-top-left-radius: 0;
+            }
 
             .item__top{
                 display flex
@@ -112,5 +157,12 @@
 
         }
     }
+
+    @media only screen and (max-width: 1600px) {
+        .mngr {
+            padding 20px;
+        }
+    }
+
 
 </style>
