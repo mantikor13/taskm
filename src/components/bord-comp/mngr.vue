@@ -3,12 +3,15 @@
     <div class="mngr">
 
         <div class="mngr__new">
-            <div class="mngr__new_wrap" @dblclick="addTask" style="top: newTop">
+            <div class="mngr__new_wrap" @dblclick="newMode = !newMode">
 
             </div>
             <transition name="fade">
                 <div class="mngr__new-task-form" v-if="newMode">
-                    <input type="text"><input type="text"><input type="text">
+                    <input v-model="name" type="text" name="titile">
+                    <input type="text" name="text">
+                    <input type="text" name="author">
+                    <button @click="addTask"></button>
                 </div>
             </transition>
         </div>
@@ -45,17 +48,22 @@
 </template>
 
 <script>
+    import axios from 'axios';
+
     export default {
         data(){
             return{
-                newMode: false
+                newMode: false,
+                name: ''
             }
         },
         methods: {
-            addTask(e){
-                console.log(e);
-                this.newMode = !this.newMode;
-
+            addTask(){
+                event.preventDefault();
+                axios.get(`index.php/?${this.name}}`).then(response => {
+                    let posts = response.data;
+                    console.log(posts);
+                })
             }
         }
     }

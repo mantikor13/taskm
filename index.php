@@ -11,6 +11,8 @@
 <body>
     <div class="app"></div>
     <script src="dist/main.js"></script>
-
+    <?php
+        print_r($_POST);
+    ?>
 </body>
 </html>
