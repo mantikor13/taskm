@@ -8,9 +8,8 @@
             </div>
             <transition name="fade">
                 <div class="mngr__new-task-form" v-if="newMode">
-                    <input v-model="name" type="text" name="titile">
-                    <input type="text" name="text">
-                    <input type="text" name="author">
+                    <input class="mngr__new-title" v-model="newTaskData.title" type="text">
+                    <input class="mngr__new-author" v-model="newTaskData.author" type="text">
                     <button @click="addTask"></button>
                 </div>
             </transition>
@@ -48,21 +47,29 @@
 </template>
 
 <script>
+    import $ from 'jquery';
     import axios from 'axios';
 
     export default {
         data(){
             return{
                 newMode: false,
-                name: ''
+                newTaskData: {
+                    title: '',
+                    author: ''
+                }
             }
         },
         methods: {
             addTask(){
-                event.preventDefault();
-                axios.get(`index.php/?${this.name}}`).then(response => {
-                    let posts = response.data;
-                    console.log(posts);
+                axios.post(`req.php`, {
+                    title: this.newTaskData.title,
+                    author: this.newTaskData.author,
+                    target: 'addTask'
+                }).then(response => {
+                    this.newTaskData.title = '';
+                    this.newTaskData.author = '';
+                    console.log(response.data)
                 })
             }
         }
