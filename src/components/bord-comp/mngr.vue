@@ -3,11 +3,11 @@
     <div class="mngr">
 
         <div class="mngr__new">
-            <div class="mngr__new_wrap" @dblclick="newMode = !newMode">
+            <div class="mngr__new_wrap" @dblclick="viewAddTask">
 
             </div>
             <transition name="fade">
-                <div class="mngr__new-task-form" v-if="newMode">
+                <div class="mngr__new-task-form" v-if="newMode" v-bind:style="formPosition">
                     <input class="mngr__new-title" v-model="newTaskData.title" type="text">
                     <input class="mngr__new-author" v-model="newTaskData.author" type="text">
                     <button @click="addTask"></button>
@@ -54,6 +54,10 @@
         data(){
             return{
                 newMode: false,
+                formPosition: {
+                    top: '',
+                    left: ''
+                },
                 newTaskData: {
                     title: '',
                     author: ''
@@ -61,6 +65,11 @@
             }
         },
         methods: {
+            viewAddTask(e){
+                this.newMode = !this.newMode;
+                this.formPosition.top = `${e.y}px`;
+                this.formPosition.left = `${e.x}px`;
+            },
             addTask(){
                 axios.post(`req.php`, {
                     title: this.newTaskData.title,
@@ -69,7 +78,7 @@
                 }).then(response => {
                     this.newTaskData.title = '';
                     this.newTaskData.author = '';
-                    console.log(response.data)
+                    this.newMode = !this.newMode;
                 })
             }
         }
@@ -101,9 +110,7 @@
             }
 
             &-task-form{
-                position absolute;
-                top 0;
-                bottom: 0
+                position fixed;
 
             }
         }

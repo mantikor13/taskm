@@ -4,8 +4,8 @@ $_POST = json_decode(file_get_contents('php://input'), true);
 
 $host = 'localhost'; // адрес сервера
 $database = 'taskm'; // имя базы данных
-$user = 'root'; // имя пользователя
-$password = ''; // пароль
+$user = 'mantikor'; // имя пользователя
+$password = 'qwert123'; // пароль
 
 $link = mysqli_connect($host, $user, $password, $database)
 or die("Ошибка " . mysqli_error($link));
