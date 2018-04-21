@@ -47,6 +47,10 @@
     export default {
         data(){
             return{
+                tasks: {
+                    reg: [],
+                    str: []
+                },
                 newMode: false,
                 formPosition: {
                     top: '',
@@ -76,8 +80,20 @@
                     this.newTaskData.title = '';
                     this.newTaskData.author = '';
                     this.newMode = !this.newMode;
-                })
+                });
             }
+        },
+        created(){
+            function fillBoard(){
+                axios.post(`req.php`, {
+                    all: false,
+                    target: 'getTasks'
+                }).then(response => {
+                    this.tasks.reg = response.data.regular;
+                    this.tasks.str = response.data.stream;
+                });
+            }
+            fillBoard();
         }
     }
 </script>

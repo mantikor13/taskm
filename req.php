@@ -22,7 +22,13 @@ if($_POST['target'] = 'addTask'){
     if($result)
     {
         echo "Выполнение запроса прошло успешно";
-    }
+    };
+};
+
+if($_POST['target'] = 'getTasks'){
+
+
+
 }
 
 
