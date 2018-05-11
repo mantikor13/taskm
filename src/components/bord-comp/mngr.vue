@@ -21,19 +21,31 @@
         </div>
         <div class="mngr__tasks">
             <div class="mngr__regular">
-                <div class="mngr__item">
+                <div class="mngr__item" v-for="reg in tasks.reg">
                     <div class="mngr__item_wrap">
                         <div class="item__top">
-                            <div class="item__title">Test</div>
-                            <div class="item__count">5</div>
+                            <div class="item__title">{{reg.title}}</div>
+                            <div class="item__count">{{reg.count}}</div>
                         </div>
                         <div class="item__content">
-                            Lorem ipsum Lorem ipsumLorem ipsum Lorem ipsum Lorem ipsum
+                            {{reg.text}}
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="mngr__stream"></div>
+            <div class="mngr__flow">
+                <div class="mngr__item" v-for="flow in tasks.flow">
+                    <div class="mngr__item_wrap">
+                        <div class="item__top">
+                            <div class="item__title">{{flow.title}}</div>
+                            <div class="item__count">{{flow.count}}</div>
+                        </div>
+                        <div class="item__content">
+                            {{flow.text}}
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
     </div>
@@ -49,7 +61,7 @@
             return{
                 tasks: {
                     reg: [],
-                    str: []
+                    flow: []
                 },
                 newMode: false,
                 formPosition: {
@@ -62,7 +74,8 @@
                 },
                 valid: {
                     color: '#000'
-                }
+                },
+                test: ''
             }
         },
         methods: {
@@ -81,19 +94,52 @@
                     this.newTaskData.author = '';
                     this.newMode = !this.newMode;
                 });
-            }
-        },
-        created(){
-            function fillBoard(){
+            },
+            fillBoard(){
                 axios.post(`req.php`, {
                     all: false,
                     target: 'getTasks'
                 }).then(response => {
-                    this.tasks.reg = response.data.regular;
-                    this.tasks.str = response.data.stream;
+                    let res = response.data;
+
+                    let data = [];
+
+                    res.forEach(function(item){
+                        let task = {};
+
+                        task.id = item[0];
+                        task.title = item[1];
+                        task.text = item[2];
+                        task.author = item[3];
+                        task.date = item[4];
+                        task.count = item[5];
+                        task.regular = item[6];
+                        task.done = item[7];
+
+                        data.push(task);
+
+                    });
+
+                    let regular = [];
+                    let flow = [];
+
+                    data.forEach(function (item) {
+                       if(item.regular === 'null'){
+                           flow.push(item);
+                       }else{
+                           regular.push(item);
+                       }
+                    });
+
+                    console.log(regular);
+
+                    this.tasks.reg = regular;
+                    this.tasks.flow = flow;
                 });
             }
-            fillBoard();
+        },
+        created(){
+            this.fillBoard();
         }
     }
 </script>

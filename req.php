@@ -4,13 +4,13 @@ $_POST = json_decode(file_get_contents('php://input'), true);
 
 $host = 'localhost'; // адрес сервера
 $database = 'taskm'; // имя базы данных
-$user = 'mantikor'; // имя пользователя
-$password = 'qwert123'; // пароль
+$user = 'root'; // имя пользователя
+$password = ''; // пароль
 
 $link = mysqli_connect($host, $user, $password, $database)
 or die("Ошибка " . mysqli_error($link));
 
-if($_POST['target'] = 'addTask'){
+if($_POST['target'] == 'addTask'){
 
     $title = $_POST['title'];
     $author = $_POST['author'];
@@ -25,8 +25,15 @@ if($_POST['target'] = 'addTask'){
     };
 };
 
-if($_POST['target'] = 'getTasks'){
+if($_POST['target'] == 'getTasks'){
 
+    $query = "SELECT * FROM `tasks`";
+    $result = mysqli_query($link, $query) or die("Ошибка " . mysqli_error($link));
+
+    $record = mysqli_fetch_all($result);
+
+    $data = json_encode($record);
+    echo $data;
 
 
 }
