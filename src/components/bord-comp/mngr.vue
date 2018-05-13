@@ -9,11 +9,14 @@
             <transition name="fade">
                 <div class="mngr__new-task" v-if="newMode" v-bind:style="formPosition">
                     <div class="mngr__new-task_inner">
-                        <input class="mngr__new-title mngr__new-text" v-model="newTaskData.title" type="text" placeholder="Title">
-                        <input class="mngr__new-author mngr__new-text" v-model="newTaskData.author" type="text" placeholder="Author">
+                        <input class="mngr__new-title mngr__new-text title" v-model="newTaskData.title" type="text" placeholder="Title">
+                        <div class="mngr__new-author">
+                            <div @click="setAuthor">Рома</div>
+                            <div @click="setAuthor">Тоха</div>
+                        </div>
                         <div class="mngr__new-btns">
-                            <input type="checkbox">
-                            <span @click="addTask" v-bind:style="valid">+</span>
+                            <input class="regular" type="checkbox" v-model="newTaskData.regular">
+                            <span @click="addTask" v-show="valid">+</span>
                         </div>
                     </div>
                 </div>
@@ -21,27 +24,41 @@
         </div>
         <div class="mngr__tasks">
             <div class="mngr__regular">
-                <div class="mngr__item" v-for="reg in tasks.reg">
+                <div class="mngr__item mngr__regular-item" v-for="(reg, index) in tasks.reg" v-bind:style="reg.color">
                     <div class="mngr__item_wrap">
                         <div class="item__top">
                             <div class="item__title">{{reg.title}}</div>
                             <div class="item__count">{{reg.count}}</div>
                         </div>
                         <div class="item__content">
-                            {{reg.text}}
+                            <div class="item__update" @click="addPoint(reg.id, reg.count)">+</div>
+                            <div class="item__end_wrap">
+                                <input type="checkbox" v-model="reg.edit">
+                                <div class="item__end" v-show="reg.edit">
+                                    <div class="item__delete" @click="addPoint(reg.id, reg.count, 'delete', index, 'reg')">Delete</div>
+                                    <div class="item__done" @click="addPoint(reg.id, reg.count, 'done', index, 'reg')">Done</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="mngr__flow">
-                <div class="mngr__item" v-for="flow in tasks.flow">
+                <div class="mngr__item mngr__flow-item" v-for="(flow, index) in tasks.flow" v-bind:style="flow.color">
                     <div class="mngr__item_wrap">
                         <div class="item__top">
                             <div class="item__title">{{flow.title}}</div>
                             <div class="item__count">{{flow.count}}</div>
                         </div>
                         <div class="item__content">
-                            {{flow.text}}
+                            <div class="item__update" @click="addPoint(flow.id, flow.count)">+</div>
+                            <div class="item__end_wrap">
+                                <input type="checkbox" v-model="flow.edit">
+                                <div class="item__end" v-show="flow.edit">
+                                    <div class="item__delete" @click="addPoint(flow.id, flow.count, 'delete', index, 'flow')">Delete</div>
+                                    <div class="item__done" @click="addPoint(flow.id, flow.count, 'done', index, 'flow')">Done</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -70,12 +87,10 @@
                 },
                 newTaskData: {
                     title: '',
-                    author: ''
+                    author: false,
+                    regular: false
                 },
-                valid: {
-                    color: '#000'
-                },
-                test: ''
+                valid: false
             }
         },
         methods: {
@@ -84,15 +99,23 @@
                 this.formPosition.top = `${e.y}px`;
                 this.formPosition.left = `${e.x}px`;
             },
+            setAuthor(event){
+                $(".mngr__new-author div").removeClass("checked");
+                $(event.target).addClass("checked");
+                this.newTaskData.author = $(event.target).text();
+            },
             addTask(){
                 axios.post(`req.php`, {
                     title: this.newTaskData.title,
                     author: this.newTaskData.author,
+                    regular: this.newTaskData.regular,
                     target: 'addTask'
                 }).then(response => {
                     this.newTaskData.title = '';
                     this.newTaskData.author = '';
+                    this.newTaskData.regular = false;
                     this.newMode = !this.newMode;
+                    this.fillBoard();
                 });
             },
             fillBoard(){
@@ -116,6 +139,14 @@
                         task.regular = item[6];
                         task.done = item[7];
 
+                        if(task.author == 'Рома'){
+                            task.color = 'border-top-color: #096C09'
+                        }else{
+                            task.color = 'border-top-color: #FF9A00'
+                        }
+
+                        task.edit = false;
+
                         data.push(task);
 
                     });
@@ -124,18 +155,54 @@
                     let flow = [];
 
                     data.forEach(function (item) {
-                       if(item.regular === 'null'){
+                       if(!item.regular){
                            flow.push(item);
                        }else{
                            regular.push(item);
                        }
                     });
 
-                    console.log(regular);
-
                     this.tasks.reg = regular;
                     this.tasks.flow = flow;
                 });
+            },
+            addPoint(id, count, end, index, type){
+                let done;
+                if(end == 'done'){
+                    done = true;
+                    if(type == 'reg'){
+                        this.tasks.reg.splice(index, 1)
+                    }else{
+                        this.tasks.flow.splice(index, 1)
+                    }
+                }else if(end == 'delete'){
+                    done = true;
+                    if(type == 'reg'){
+                        this.tasks.reg.splice(index, 1)
+                    }else{
+                        this.tasks.flow.splice(index, 1)
+                    }
+                }
+                axios.post(`req.php`, {
+                    id: id,
+                    count: count,
+                    done: done,
+                    target: 'addPoint'
+                }).then(response => {
+                    console.log(response)
+                });
+            }
+        },
+        watch: {
+            newTaskData: {
+                handler(val){
+                    if(this.newTaskData.title != '' && this.newTaskData.author){
+                        this.valid = true
+                    }else{
+                        this.valid = false
+                    }
+                },
+                deep: true
             }
         },
         created(){
@@ -159,9 +226,9 @@
         display: flex;
 
         &__new{
-            width 300px
+            min-width 300px;
             border-right 3px solid #491D37;
-            position: relative
+            position: relative;
 
             &_wrap{
                 width 100%
@@ -173,7 +240,7 @@
                 width 250px;
                 padding 0 5px;
 
-                border-top: 5px solid #009700;
+                border-top: 5px solid #491d37;
 
                 &_inner{
                     width: 100%
@@ -207,6 +274,45 @@
                     }
                 }
 
+                .mngr__new-author{
+                    display: flex
+                    border 1px solid #5b1554
+                    width: 100%
+                    height 30px
+
+                    div{
+                        display: flex;
+                        justify-content: center
+                        align-items: center
+                        width: 50%;
+                        border-right: 1px solid #5b1554
+                        background-color: #B8B8B8
+                        opacity 0.7
+
+                        &:first-child{
+                            border-top-left-radius: 5px;
+                            border-bottom-left-radius: 5px;
+                        }
+
+                        &:last-child{
+                            border: none;
+                            border-top-right-radius: 5px;
+                            border-bottom-right-radius: 5px;
+                        }
+
+                        &:hover{
+                            cursor: pointer;
+                            background-color: #E3E3E3
+                            opacity 1
+                        }
+
+                        &.checked{
+                            background-color: #E3E3E3
+                            opacity 1
+                        }
+                    }
+                }
+
                 .mngr__new-btns{
                     width: 100%
                     display: flex;
@@ -231,26 +337,14 @@
             }
         }
 
-        &__regular{
-            display flex;
-            justify-content: space-between
-            height 30%;
-            padding-bottom: 20px;
-            border-bottom 3px solid #491D37;
-        }
-
-        &__stream{
-            height 70%;
-            padding-top: 20px;
-        }
-
         &__item{
-            height 100%;
-            width 45%;
+            /*height 100%;*/
+            /*width 45%;*/
 
             padding 0 5px;
+            margin: 0 10px;
 
-            border-top: 5px solid #5B1554;
+            border-top: 5px solid;
 
             color: white
 
@@ -265,23 +359,97 @@
 
             .item__top{
                 display flex
-                justify-content: space-between
+                justify-content: flex-end
+                align-items: flex-start
                 font-size 25px
                 margin-bottom: 10px;
                 padding-bottom: 15px;
                 border-bottom: 1px solid #fff;
+
+                position: relative
                 
                 .item__count{
                     padding: 0 5px;
                     background-color: #fff;
                     color: #000;
                 }
+
+                .item__title{
+                    width: 80%
+                    height 30px
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    text-overflow: ellipsis;
+                    overflow: hidden
+                }
             }
 
             .item__content{
+                display: flex;
+                justify-content: space-between
+                align-items flex-end
 
+                .item__update{
+                    font-size: 40px;
+                    color: green;
+
+                    &:hover{
+                        cursor: pointer
+                    }
+                }
+
+                .item__end_wrap{
+                    display: flex
+                    flex-direction: column
+                    align-items: flex-end
+
+                    .item__end{
+                        display: flex
+
+                        .item__delete{
+                            color: red;
+                            margin-right: 10px
+                        }
+
+                        .item__done{
+                            color: green
+                        }
+                    }
+                }
             }
 
+        }
+
+        &__regular{
+            display flex;
+            justify-content: space-between
+            height 30%;
+            padding-bottom: 20px;
+            border-bottom 3px solid #491D37;
+
+            &-item{
+                width 45%;
+            }
+        }
+
+        &__flow{
+            display flex;
+            align-items: flex-start
+            flex-wrap: wrap;
+
+            height 70%;
+            overflow-y: scroll;
+            padding-top: 20px;
+
+            &-item{
+                width 30%;
+                margin-bottom 10px
+
+                .item__title{
+                    font-size: 14px
+                }
+            }
         }
     }
 

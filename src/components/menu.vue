@@ -7,8 +7,8 @@
                 <a href=""><img src="" alt="logo"></a>
             </div>
             <div class="menu__score">
-                <div class="menu__score-total">913</div>
-                <div class="menu__score-average">9,87</div>
+                <div class="menu__score-total">{{points.sum}}</div>
+                <div class="menu__score-average">{{points.midl}}</div>
             </div>
             <div class="menu__logout">
                 <img src="../img/logout.svg" alt="">
@@ -31,11 +31,42 @@
 </template>
 
 <script>
+    import axios from 'axios';
+
     export default {
         data(){
             return{
-                message: 'Hellow, world'
+                points: {
+                    sum: 0,
+                    midl: 0
+                }
             }
+        },
+        methods: {
+            getPoint(){
+                axios.post(`req.php`, {
+                    target: 'getPoints'
+                }).then(response => {
+                    let res = response.data;
+
+                    let sum = 1150;
+                    res.forEach(function (item) {
+                        sum += +item[0];
+                    });
+
+                    let length = res.length + 130;
+                    let midl = sum / length;
+
+                    midl = midl.toFixed(2);
+
+                    this.points.sum = sum;
+                    this.points.midl = midl;
+
+                });
+            }
+        },
+        created(){
+            this.getPoint();
         }
     }
 </script>

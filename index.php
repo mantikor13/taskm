@@ -11,8 +11,5 @@
 <body>
     <div class="app"></div>
     <script src="dist/main.js"></script>
-    <?php
-
-    ?>
 </body>
 </html>
