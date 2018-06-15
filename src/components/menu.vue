@@ -19,10 +19,10 @@
         <div class="menu__left">
 
             <ul class="menu__nav">
-                <li>Менеджер</li>
-                <li>Математик</li>
-                <li>Историк</li>
-                <li>Стратег</li>
+                <li @click="changeMode('mngr')">Менеджер</li>
+                <li @click="changeMode('math')">Математик</li>
+                <li @click="changeMode('hist')">Историк</li>
+                <li @click="changeMode('global')">Стратег</li>
             </ul>
 
         </div>
@@ -63,6 +63,9 @@
                     this.points.midl = midl;
 
                 });
+            },
+            changeMode(mode){
+                this.$emit('changeMode', mode);
             }
         },
         created(){
@@ -80,7 +83,7 @@
 
         &__top{
             position: relative;
-            z-index: 10;
+            z-index 100;
 
             height: 50px;
             width: 100vw;
@@ -97,6 +100,7 @@
 
         &__left{
             position: relative;
+            z-index 99;
 
             height: 100vh;
             width: 150px;

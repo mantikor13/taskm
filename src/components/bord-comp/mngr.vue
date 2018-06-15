@@ -2,6 +2,10 @@
 
     <div class="mngr">
 
+        <video autoplay muted loop id="myVideo">
+            <source src="../../img/mngr.mp4" type="video/mp4">
+        </video>
+
         <div class="mngr__new">
             <div class="mngr__new_wrap" @dblclick="viewAddTask">
 
@@ -98,6 +102,7 @@
                 this.newMode = !this.newMode;
                 this.formPosition.top = `${e.y}px`;
                 this.formPosition.left = `${e.x}px`;
+                console.log(e);
             },
             setAuthor(event){
                 $(".mngr__new-author div").removeClass("checked");
@@ -119,7 +124,7 @@
                 });
             },
             fillBoard(){
-                axios.post(`req.php`, {
+                axios.post(`req.php`,{
                     all: false,
                     target: 'getTasks'
                 }).then(response => {
@@ -176,7 +181,7 @@
                         this.tasks.flow.splice(index, 1)
                     }
                 }else if(end == 'delete'){
-                    done = true;
+                    done = false;
                     if(type == 'reg'){
                         this.tasks.reg.splice(index, 1)
                     }else{
@@ -220,9 +225,8 @@
         opacity: 0;
     }
 
-    .mngr{
-        padding 50px;
 
+    .mngr{
         display: flex;
 
         &__new{
@@ -450,12 +454,6 @@
                     font-size: 14px
                 }
             }
-        }
-    }
-
-    @media only screen and (max-width: 1600px) {
-        .mngr {
-            padding 20px;
         }
     }
 

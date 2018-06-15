@@ -20,6 +20,10 @@ let conf = {
             {
                 test: /\.(png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot|mp4)(\?.*$|$)/,
                 loader: 'url-loader?limit=100000'
+            },
+            {
+                test: /\.css$/,
+                loaders: ["style-loader","css-loader"]
             }
         ]
     }

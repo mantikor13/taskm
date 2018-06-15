@@ -1,10 +1,14 @@
 import $ from 'jquery';
 import Vue from 'vue';
+import Router from 'vue-router';
+
 import App from './components/App.vue';
+import Login from './components/Login.vue'
 
 import Menu from './components/menu.vue';
 import Board from './components/dashboard.vue';
 
+Vue.component("Login", Login);
 Vue.component("Menu", Menu);
 Vue.component("Board", Board);
 
@@ -18,7 +22,17 @@ Vue.component("Math", Mathematician);
 Vue.component("Hist", Historian);
 Vue.component("Global", Global);
 
-new Vue({
+Vue.use(Router);
+
+let router = new Router({
+    router: [
+        {path: '/dashboard', component: App},
+        {path: '/login', component: Login},
+    ]
+});
+
+const Main =  new Vue({
    el: '.app',
+    router: router,
    render: h => h(App)
 });

@@ -9,7 +9,11 @@
     <title>Document</title>
 </head>
 <body>
-    <div class="app"></div>
+    <div class="app">
+
+        <router-view></router-view>
+
+    </div>
     <script src="dist/main.js"></script>
 </body>
 </html>

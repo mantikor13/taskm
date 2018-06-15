@@ -1,7 +1,8 @@
 <template>
     <div class="app">
-        <Menu></Menu>
-        <Board></Board>
+        <Login v-if="!isAuth"></Login>
+        <Menu v-else @changeMode="changeMode"></Menu>
+        <Board v-else v-bind:mode="mode"></Board>
     </div>
 </template>
 
@@ -9,7 +10,13 @@
     export default {
         data(){
             return{
-                message: 'test'
+                mode: 'math',
+                isAuth: false
+            }
+        },
+        methods: {
+            changeMode(mode){
+                this.mode = mode;
             }
         }
     }
@@ -32,9 +39,6 @@
         position: relative;
 
         font-family Roboto;
-
-        /*display inline-block;*/
-        /*padding 50px 0 0 150px;*/
 
         display flex
         justify-content flex-end
